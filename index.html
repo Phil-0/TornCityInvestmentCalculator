@@ -66,16 +66,39 @@
             console.log("Duration (weeks): " + duration);
 
             let rates;
-            fetch(`https://api.torn.com/torn/?selections=bank&key=${apikey}`, {method: 'get'}
-            ).then(function(response) {rates = response; console.log(response);}).catch(err => console.log("Error: " + err));
-            let resp;
-            fetch(`https://api.torn.com/user/?selections=merits,perks&key=${apikey}`, {method: 'get'}
-            ).then(function(response) {resp = response; console.log(response);}).catch(err => console.log("Error: " + err));
+            fetch(`https://api.torn.com/torn/?selections=bank&key=${apikey}`).then(response => response.text()).then(body => {
+                try {
+                    rates = JSON.parse(body);
+                    console.log("Rates:");
+                    console.log(rates);
+                } catch {
+                    throw Error(body);
+                }
+            })
+            .then(console.log).catch(console.error);
 
-            console.log("Rates:");
-            console.log(rates);
-            console.log("Resp:");
-            console.log(resp);
+            let resp;
+            fetch(`https://api.torn.com/user/?selections=merits,perks&key=${apikey}`).then(response => response.text()).then(body => {
+                try {
+                    resp = JSON.parse(body);
+                } catch {
+                    throw Error(body);
+                }
+            })
+            .then(console.log).catch(console.error);
+
+            function waitForResponses() {
+                if (typeof rates !== "undefined" && typeof resp !== "undefined") {
+                    console.log("Rates:");
+                    console.log(rates);
+                    console.log("Resp:");
+                    console.log(resp);
+                } else {
+                    setTimeout(waitForResponses, 1000);
+                }
+            }
+            waitForResponses();
+
         }
     </script>
 </body>
