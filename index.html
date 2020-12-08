@@ -5,7 +5,7 @@
 </head>
 <body>
 
-    <h1>This is a Heading2</h1>
+    <h1>This is a Heading3</h1>
     <p>This is a paragraph.</p>
 
     <!-- <form onsubmit="calculate(this);"> -->
@@ -106,7 +106,7 @@
                             // 1w, 7
                             let apr = (parseFloat(rates.bank[key]) / 100 * (1 + 0.05 * merits + 0.1 * stock)).toFixed(4);
                             // d = value
-                            let periods = duration * 7 / d;  // multiply by 7 since input is in weeks
+                            let periods = duration * 7 / d;
                             if (periods < 1) {
                                 return;
                             }
