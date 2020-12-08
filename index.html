@@ -5,7 +5,7 @@
 </head>
 <body>
 
-    <h1>This is a Heading1</h1>
+    <h1>This is a Heading</h1>
     <p>This is a paragraph.</p>
 
     <!-- <form onsubmit="calculate(this);"> -->
@@ -77,9 +77,21 @@
             console.log("Duration (weeks): " + duration);
 
             let rates = {"banks": {"1w": "37.17", "2w": "41.79", "1m": "49.61", "2m": "49.28", "3m": "56.40"}};
-            let resp;
+
+            function updateOutput() {
+                let outputArray = [];
+                Object.entries(investmentPeriods).forEach(function([key, value]) {
+                    let apr = (parseFloat(rates.bank[key]) / 100 * (1 + 0.05 * merits + 0.1 * stock)).toFixed(4);
+                    let periods = duration * 7 / value; 
+                    if (periods < 1) {return;}
+                    let adjustedRate = apr * value / 365;
+                    outputArray.push(key + ": $" + formatMoney(Math.floor(compoundInterest(investment, adjustedRate, periods))));
+                });
+                output.innerHTML = outputArray.join("<br>");
+            }
 
             if (apikey) {
+                let resp;
                 fetch(`https://api.torn.com/torn/?selections=bank&key=${apikey}`).then(response => response.text()).then(body => {
                     try {
                         rates = JSON.parse(body);
@@ -94,6 +106,8 @@
                         throw Error(body);
                     }
                 }).then(console.log).catch(console.error);
+
+                
 
                 function waitForResponses() {
                     if (typeof rates !== "undefined" && typeof resp !== "undefined") {
@@ -110,26 +124,14 @@
                                 stock = true;
                             }
                         });
-
-                        let outputArray = [];
-                        Object.entries(investmentPeriods).forEach(function([key, value]) {
-                            // 1w, 7
-                            let apr = (parseFloat(rates.bank[key]) / 100 * (1 + 0.05 * merits + 0.1 * stock)).toFixed(4);
-                            // multiply by 7 since input is in weeks
-                            let periods = duration * 7 / value; 
-                            if (periods < 1) {
-                                return;
-                            }
-                            let adjustedRate = apr * value / 365;
-                            outputArray.push(key + ": $" + formatMoney(Math.floor(compoundInterest(investment, adjustedRate, periods))));
-                            // output.innerHTML = "$" + Math.floor(compoundInterest(investment, adjustedRate, periods)).toString();
-                        });
-                        output.innerHTML = outputArray.join("<br>");
+                        updateOutput();
                     } else {
                         setTimeout(waitForResponses, 1000);
                     }
                 }
                 waitForResponses();
+            } else {
+                updateOutput();
             }
         }
     </script>
