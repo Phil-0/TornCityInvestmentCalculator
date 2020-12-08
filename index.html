@@ -68,7 +68,7 @@
         const meritInput = document.getElementById("merits");
         const stockInput = document.getElementById("stock");
         apikeyInput.addEventListener("input", function (event) {
-            if (event.data) {
+            if (apikeyInput.value) {
                 meritInput.disabled = true;
                 stockInput.disabled = true;
             } else {
