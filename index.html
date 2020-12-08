@@ -67,13 +67,15 @@
 
             let rates;
             fetch(`https://api.torn.com/torn/?selections=bank&key=${apikey}`, {method: 'get'}
-            ).then(response => rates = response).catch(err => console.log("Error: " + err));
+            ).then(function(response) {rates = response; console.log(response);}).catch(err => console.log("Error: " + err));
             let resp;
             fetch(`https://api.torn.com/user/?selections=merits,perks&key=${apikey}`, {method: 'get'}
-            ).then(response => resp = response).catch(err => console.log("Error: " + err));
+            ).then(function(response) {resp = response; console.log(response);}).catch(err => console.log("Error: " + err));
 
             console.log("Rates:");
             console.log(rates);
+            console.log("Resp:");
+            console.log(resp);
         }
     </script>
 </body>
