@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Page Title</title>
+    
 </head>
 <body>
 
@@ -26,7 +27,7 @@
         <input id="merits" name="merits" type="range" min="0" max="10", value="0", step="1">
     </div>
     <div>
-        <label>Bank Interest merits</label>
+        <label>TCIB stock BB</label>
         <input id="stock" name="stock" type="checkbox">
     </div>
     <div>
@@ -55,17 +56,26 @@
             let rates;
             fetch(`https://api.torn.com/torn/?selections=bank&key=${apikey}`, {method: 'get'}
             ).then(response => rates = response).catch(err => console.log("Error: " + err));
+            let resp;
+            fetch(`https://api.torn.com/user/?selections=merits,perks&key=${apikey}`, {method: 'get'}
+            ).then(response => resp = response).catch(err => console.log("Error: " + err));
+
             console.log("Rates:");
             console.log(rates);
-
         }
 
         const apikeyInput = document.getElementById("key");
+        const meritInput = document.getElementById("merits");
+        const stockInput = document.getElementById("stock");
         apikeyInput.addEventListener("input", function (event) {
-            console.log("Key input:");
-            console.log(event);
+            if (event.data) {
+                meritInput.disabled = true;
+                stockInput.disabled = true;
+            } else {
+                meritInput.disabled = false;
+                stockInput.disabled = false;
+            }
         });
-
     </script>
 </body>
 </html>
