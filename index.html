@@ -6,10 +6,7 @@
 </head>
 <body>
 
-    <h1>This is a Heading</h1>
-    <p>This is a paragraph.</p>
-
-    <!-- <form onsubmit="calculate(this);"> -->
+    <h1>Torn Bank Investment Calculator</h1>
         <div>
             <label>API key:</label>
             <input id="key" name="key" type="text">
@@ -33,7 +30,6 @@
         <div>
             <button onclick="calculate();">Calculate</button>
         </div>
-    <!-- </form> -->
     <div>
         <label id="output"></label>
     </div>
@@ -107,8 +103,6 @@
                         throw Error(body);
                     }
                 }).then(console.log).catch(console.error);
-
-                
 
                 function waitForResponses() {
                     if (typeof rates !== "undefined" && typeof resp !== "undefined") {
