@@ -106,7 +106,7 @@
                             // 1w, 7
                             let apr = (parseFloat(rates.bank[key]) / 100 * (1 + 0.05 * merits + 0.1 * stock)).toFixed(4);
                             // d = value
-                            let periods = duration * 7 / d;
+                            let periods = duration * 7 / value;
                             if (periods < 1) {
                                 return;
                             }
