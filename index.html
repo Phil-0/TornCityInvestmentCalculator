@@ -55,6 +55,8 @@
             }
         });
 
+        const investmentPeriods = {"1w": 7, "2w": 14, "1m": 30, "2m": 60, "3m": 90}
+
         function calculate(obj) {
             let apikey = apikeyInput.value;
             let investment = document.getElementById("investment").value;
@@ -65,40 +67,58 @@
             console.log("Investment: $" + investment);
             console.log("Duration (weeks): " + duration);
 
-            let rates;
-            fetch(`https://api.torn.com/torn/?selections=bank&key=${apikey}`).then(response => response.text()).then(body => {
-                try {
-                    rates = JSON.parse(body);
-                    console.log("Rates:");
-                    console.log(rates);
-                } catch {
-                    throw Error(body);
-                }
-            })
-            .then(console.log).catch(console.error);
-
+            let rates = {"banks": {"1w": "37.17", "2w": "41.79", "1m": "49.61", "2m": "49.28", "3m": "56.40"}};
             let resp;
-            fetch(`https://api.torn.com/user/?selections=merits,perks&key=${apikey}`).then(response => response.text()).then(body => {
-                try {
-                    resp = JSON.parse(body);
-                } catch {
-                    throw Error(body);
-                }
-            })
-            .then(console.log).catch(console.error);
 
-            function waitForResponses() {
-                if (typeof rates !== "undefined" && typeof resp !== "undefined") {
-                    console.log("Rates:");
-                    console.log(rates);
-                    console.log("Resp:");
-                    console.log(resp);
-                } else {
-                    setTimeout(waitForResponses, 1000);
+            if (apikey) {
+                fetch(`https://api.torn.com/torn/?selections=bank&key=${apikey}`).then(response => response.text()).then(body => {
+                    try {
+                        rates = JSON.parse(body);
+                    } catch {
+                        throw Error(body);
+                    }
+                }).then(console.log).catch(console.error);
+                fetch(`https://api.torn.com/user/?selections=merits,perks&key=${apikey}`).then(response => response.text()).then(body => {
+                    try {
+                        resp = JSON.parse(body);
+                    } catch {
+                        throw Error(body);
+                    }
+                }).then(console.log).catch(console.error);
+
+                function waitForResponses() {
+                    if (typeof rates !== "undefined" && typeof resp !== "undefined") {
+                        console.log("Rates:");
+                        console.log(rates);
+                        console.log("Resp:");
+                        console.log(resp);
+                        
+                        merits = resp.merits["Bank Interest"];
+                        console.log("Set Merits to: " + merits);
+
+                        Object.entries(resp.stock_perks).forEach(function([key, value]) {
+                            if (value.includes("TCIB")) {
+                                stock = true;
+                            }
+                        });
+
+                        Object.entries(investmentPeriods).forEach(function([key, value]) {
+                            // 1w, 7
+                            let apr = (parseFloat(rates.bank[key]) / 100 * (1 + 0.05 * merits + 0.1 * stock)).toFixed(4);
+                            // d = value
+                            let periods = duration * 7 / d;  // multiply by 7 since input is in weeks
+                            if (periods < 1) {
+                                return;
+                            }
+                            let adjustedRate = apr * value / 365;
+                            output.innerHTML = "$" + Math.floor(compoundInterest(investment, adjustedRate, periods)).toString();
+                        });
+                    } else {
+                        setTimeout(waitForResponses, 1000);
+                    }
                 }
+                waitForResponses();
             }
-            waitForResponses();
-
         }
     </script>
 </body>
