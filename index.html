@@ -1,12 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Page Title</title>
+    <title>Page Title</title>
 </head>
 <body>
 
 <h1>This is a Heading</h1>
 <p>This is a paragraph.</p>
 
+<form onsubmit="calculate(this);">
+    <div>
+        <label>API key:</label>
+        <input id="key" name="key" type="text">
+    </div>
+    <div>
+        <label>Investment amount</label>
+        <input id="investment" name="investment" type="number" step="1" min="0" max="3000000000" value="2000000000">
+    </div>
+    <div>
+        <label>Investment duration (weeks)</label>
+        <input id="duration" name="duration" type="number" min="1" value="1">
+    </div>
+    <div>
+        <label>Bank Interest merits</label>
+        <input id="merits" name="merits" type="range" min="0" max="10", value="0", step="1">
+    </div>
+    <div>
+        <label>Bank Interest merits</label>
+        <input id="stock" name="stock" type="checkbox">
+    </div>
+    <div>
+        <input id="submit" type="submit">
+    </div>
+    </form>
+    <div>
+        <label id="output"></label>
+    </div>
+
+    <script>
+        function compoundInterest(initialBalance, interestRate, periodsElapsed) {
+            return initialBalance * (1 + interestRate) ** periodsElapsed
+        }
+
+        function calculate(obj) {
+            let apikey = document.getElementById("key").value;
+            let investment = document.getElementById("investment").value;
+            let duration = document.getElementById("duration").value;
+            let merits = document.getElementById("merits").value;
+            let stock = document.getElementById("stock").checked;
+            let output = document.getElementById("output");
+            console.log("Investment: $" + investment);
+            console.log("Duration (weeks): " + duration);
+
+            let rates;
+            fetch(`https://api.torn.com/torn/?selections=bank&key=${apikey}`, {method: 'get'}
+            ).then(response => rates = response).catch(err => console.log("Error: " + err));
+            console.log("Rates:");
+            console.log(rates);
+
+        }
+
+        const apikeyInput = document.getElementById("key");
+        apikeyInput.addEventListener("input", function (event) {
+            console.log("Key input:");
+            console.log(event);
+        });
+
+    </script>
 </body>
 </html>
