@@ -5,7 +5,7 @@
 </head>
 <body>
 
-    <h1>This is a Heading4</h1>
+    <h1>This is a Heading</h1>
     <p>This is a paragraph.</p>
 
     <!-- <form onsubmit="calculate(this);"> -->
@@ -40,7 +40,12 @@
     <script>
         function compoundInterest(initialBalance, interestRate, periodsElapsed) {
                 return initialBalance * (1 + interestRate) ** periodsElapsed
-            }
+        }
+        function formatMoney(number) {
+            var i = String(number);
+            var j = (j = i.length) > 3 ? j % 3 : 0;
+            return (j ? i.substr(0, j) + ',' : "") + i.substr(j).replace(/(\.{3})(?=\.)/g, "$1" + ",");
+        }
 
         const apikeyInput = document.getElementById("key");
         const meritInput = document.getElementById("merits");
@@ -112,10 +117,10 @@
                                 return;
                             }
                             let adjustedRate = apr * value / 365;
-                            outputArray.push(key + ": $" + Math.floor(compoundInterest(investment, adjustedRate, periods)).toString());
+                            outputArray.push(key + ": $" + Math.floor(compoundInterest(investment, adjustedRate, periods)).formatMoney());
                             // output.innerHTML = "$" + Math.floor(compoundInterest(investment, adjustedRate, periods)).toString();
                         });
-                        output.innerHTML = outputArray.join("\n");
+                        output.innerHTML = outputArray.join("<br>");
                     } else {
                         setTimeout(waitForResponses, 1000);
                     }
