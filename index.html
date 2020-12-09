@@ -21,7 +21,8 @@
         </div>
         <div>
             <label>Bank Interest merits</label>
-            <input id="merits" name="merits" type="range" min="0" max="10", value="0", step="1">
+            <input id="merits" name="merits" type="range" min="0" max="10", value="0", step="1" onchange="updateMeritLabel(this.value);">
+            <label id="meritval" name="meritval">0</label>
         </div>
         <div>
             <label>TCIB stock BB</label>
@@ -62,6 +63,10 @@
         });
 
         const investmentPeriods = {"1w": 7, "2w": 14, "1m": 30, "2m": 60, "3m": 90}
+        
+        function updateMeritLabel(val) {
+          document.getElementById('meritLabel').value=val;
+        }
 
         function calculate(obj) {
             let apikey = apikeyInput.value;
